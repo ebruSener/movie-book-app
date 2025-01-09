@@ -1,0 +1,34 @@
+.movie-carousel {
+  display: flex;
+  overflow-x: auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+.movie-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 0 0 auto;
+  width: 200px;
+  text-align: center;
+}
+
+.movie-poster {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+}
+
+.movie-info {
+  padding: 10px;
+}
+
+.movie-info h3 {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.movie-info p {
+  font-size: 14px;
+  color: #666;
+} 
