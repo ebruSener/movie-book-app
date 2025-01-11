@@ -3,31 +3,30 @@ import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 function Kayit() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Şifrelerin eşleşip eşleşmediğini kontrol et
-    if (formData.password !== formData.confirmPassword) {
-      alert("Şifreler eşleşmiyor!");
-      return;
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (response.ok) {
+        setSuccessMessage('Kayıt başarılı! Anasayfaya yönlendiriliyorsunuz...');
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        console.error('Kayıt başarısız');
+      }
+    } catch (error) {
+      console.error('Kayıt sırasında bir hata oluştu', error);
     }
-    // Kayıt işlemi burada yapılacak
-    // Kayıt başarılı olduğunda anasayfaya yönlendir
-    navigate('/anasayfa');
   };
 
   return (
@@ -39,23 +38,13 @@ function Kayit() {
       <div className="login-container">
         <h1>Kayıt Ol</h1>
         <form className="login-form" onSubmit={handleSubmit}>
-          <label htmlFor="username">Kullanıcı Adı:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-
           <label htmlFor="email">Email:</label>
           <input
             type="email"
             id="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 
@@ -64,23 +53,14 @@ function Kayit() {
             type="password"
             id="password"
             name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-
-          <label htmlFor="confirmPassword">Şifre Onaylama:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
 
           <button type="submit">Kayıt Ol</button>
         </form>
+        {successMessage && <p className="success-message">{successMessage}</p>}
       </div>
     </div>
   );
