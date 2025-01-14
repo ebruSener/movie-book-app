@@ -1,127 +1,96 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Filmler.css';
+import Header from '../bilesenler/Header';
+import '../App.css';
 
-function Filmler() {
-  const [movies, setMovies] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedGenre, setSelectedGenre] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+const Filmler = () => {
+  const [filmler, setFilmler] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const genres = [
+    { name: 'Popüler', value: 'popular' },
+    { name: 'Aksiyon', value: '28' },
+    { name: 'Komedi', value: '35' },
+    { name: 'Dram', value: '18' },
+    { name: 'Korku', value: '27' },
+    { name: 'Bilim Kurgu', value: '878' }
+  ];
+  const [selectedGenre, setSelectedGenre] = useState('popular');
   const navigate = useNavigate();
 
-  const apiKey = '6dd2d2c38d904ab0a956859a545e8db2';
-
   useEffect(() => {
-    fetchGenres();
-    fetchMovies();
-  }, []);
+    const fetchFilmler = async () => {
+      try {
+        const genreQuery = selectedGenre === 'popular' ? 'popular' : `with_genres=${selectedGenre}`;
+        const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=6dd2d2c38d904ab0a956859a545e8db2&language=en-US&${genreQuery}&page=1`);
+        if (!response.ok) {
+          throw new Error('Veri yüklenemedi');
+        }
+        const data = await response.json();
+        setFilmler(data.results || []);
+      } catch (error) {
+        console.error('Filmler yüklenirken bir hata oluştu:', error);
+      }
+    };
 
-  const fetchGenres = async () => {
-    try {
-      const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`);
-      const data = await response.json();
-      setGenres(data.genres);
-    } catch (error) {
-      setError('Film türleri yüklenirken bir sorun oluştu.');
-    }
+    fetchFilmler();
+  }, [selectedGenre]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const filtered = filmler.filter(film =>
+      film.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilmler(filtered);
   };
 
-  const fetchMovies = async (url = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1`) => {
-    setLoading(true);
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      setMovies(data.results);
-      setLoading(false);
-    } catch (error) {
-      setError('Filmler yüklenirken bir sorun oluştu.');
-      setLoading(false);
-    }
+  const handleGenreChange = (e) => {
+    setSelectedGenre(e.target.value);
   };
-
-  const handleGenreChange = (event) => {
-    const genreId = event.target.value;
-    setSelectedGenre(genreId);
-    if (genreId) {
-      fetchMovies(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&with_genres=${genreId}`);
-    } else {
-      fetchMovies();
-    }
-  };
-
-  const handleSearch = (event) => {
-    event.preventDefault();
-    if (searchQuery) {
-      fetchMovies(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&query=${searchQuery}`);
-    } else {
-      fetchMovies();
-    }
-  };
-
-  if (loading) {
-    return <div className="loading-spinner">Yükleniyor...</div>;
-  }
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
 
   return (
     <div>
-      <header>
-        <h1>Filmler</h1>
-        <p>En popüler filmleri keşfedin!</p>
+      <Header />
+      <div className="search-bar">
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Film Ara..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-button">Ara</button>
+        </form>
+      </div>
+      <div className="genre-filter">
         <select onChange={handleGenreChange} value={selectedGenre}>
-          <option value="">Tüm Türler</option>
-          {genres.map(genre => (
-            <option key={genre.id} value={genre.id}>
+          {genres.map((genre) => (
+            <option key={genre.value} value={genre.value}>
               {genre.name}
             </option>
           ))}
         </select>
-      </header>
-      <nav className="nav-bar">
-        <button onClick={() => navigate('/anasayfa')}>Ana Sayfa</button>
-        <button onClick={() => navigate('/filmler')}>Filmler</button>
-        <button onClick={() => navigate('/kitaplar')}>Kitaplar</button>
-        <button onClick={() => navigate('/profil')}>Profil</button>
-        <button onClick={() => navigate('/giris')}>Çıkış Yap</button>
-      </nav>
-      <div className="search-bar">
-        <form onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Bir film ara..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit">Ara</button>
-        </form>
       </div>
-      <div className="movie-grid">
-        {movies.map(movie => (
-          <div className="movie-card" key={movie.id} onClick={() => navigate(`/film/${movie.id}`)}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-              className="movie-poster"
-            />
-            <div className="movie-info">
-              <h3>{movie.title}</h3>
-              <p>Yayın Tarihi: {movie.release_date}</p>
-              <p>Ortalama Puan: {movie.vote_average}</p>
-              <button>Favorilere Ekle</button>
+      <div className="movie-list">
+        {filmler.length > 0 ? (
+          filmler.map((film) => (
+            <div key={film.id} className="movie-card" onClick={() => navigate(`/film/${film.id}`)}>
+              <img
+                src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
+                alt={film.title}
+                className="movie-poster"
+              />
+              <div className="movie-info">
+                <h3>{film.title}</h3>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>Filmler yüklenemedi.</p>
+        )}
       </div>
-      <footer>
-        MOVIEBOOK © 2025
-      </footer>
     </div>
   );
-}
+};
 
 export default Filmler;

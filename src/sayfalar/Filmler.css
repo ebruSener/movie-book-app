@@ -4,7 +4,7 @@ body {
   background-color: #f9f9f9;
   margin: 0;
   padding: 0;
-  color: #333;
+  color: #8d680c6e;
 }
 
 /* Üst Kısım */
@@ -20,7 +20,7 @@ header h1 {
 
 header p {
   font-size: 1em;
-  color: #666;
+  color: #8d680c6e;
 }
 
 select {
@@ -33,7 +33,7 @@ select {
 }
 
 select:focus {
-  border-color: #4CAF50;
+  border-color: #8d680c6e;
 }
 
 /* Navigasyon Menüsü */
@@ -47,7 +47,7 @@ select:focus {
 .nav-bar button {
   background: none;
   border: none;
-  color: #007bff;
+  color: #644502;
   margin: 0 15px;
   font-size: 16px;
   cursor: pointer;
@@ -55,7 +55,7 @@ select:focus {
 }
 
 .nav-bar button:hover {
-  color: #0056b3;
+  color: #644502;
 }
 
 /* Arama Çubuğu */
@@ -131,7 +131,7 @@ select:focus {
 
 .movie-info p {
   font-size: 14px;
-  color: #666;
+  color: #8d680c6e;
 }
 
 .movie-info button {
@@ -169,7 +169,7 @@ select:focus {
 footer {
   text-align: center;
   padding: 10px;
-  background-color: #333;
+  background-color: #8d680c6e;
   color: white;
   margin-top: 20px;
 } 

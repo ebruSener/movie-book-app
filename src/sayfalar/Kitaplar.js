@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Kitaplar.css';
+import Header from '../bilesenler/Header';
+import '../App.css';
 
-function Kitaplar() {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedGenre, setSelectedGenre] = useState('fantasy');
-  const navigate = useNavigate();
-
+const Kitaplar = () => {
+  const [kitaplar, setKitaplar] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const genres = [
+    { name: 'Popüler', value: 'popular' },
     { name: 'Fantastik', value: 'fantasy' },
     { name: 'Bilim Kurgu', value: 'science_fiction' },
     { name: 'Tarih', value: 'history' },
@@ -17,78 +15,76 @@ function Kitaplar() {
     { name: 'Korku', value: 'horror' },
     { name: 'Gizem', value: 'mystery' }
   ];
+  const [selectedGenre, setSelectedGenre] = useState('popular');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`https://openlibrary.org/subjects/${selectedGenre}.json`)
-      .then(response => response.json())
-      .then(data => {
-        setBooks(data.works);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError('Kitaplar yüklenirken bir hata oluştu.');
-        setLoading(false);
-      });
+    const fetchKitaplar = async () => {
+      try {
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${selectedGenre}`);
+        const data = await response.json();
+        setKitaplar(data.items);
+      } catch (error) {
+        console.error('Kitaplar yüklenirken bir hata oluştu:', error);
+      }
+    };
+
+    fetchKitaplar();
   }, [selectedGenre]);
 
-  const handleGenreChange = (event) => {
-    setSelectedGenre(event.target.value);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const filtered = kitaplar.filter(kitap =>
+      kitap.volumeInfo.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setKitaplar(filtered);
   };
 
-  if (loading) {
-    return <div className="loading-spinner">Yükleniyor...</div>;
-  }
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
+  const handleGenreChange = (e) => {
+    setSelectedGenre(e.target.value);
+  };
 
   return (
     <div>
-      <header>
-        <h1>Kitaplar</h1>
-        <p>Tür seçerek kitapları keşfedin.</p>
+      <Header />
+      <div className="search-bar">
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Kitap Ara..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-button">Ara</button>
+        </form>
+      </div>
+      <div className="genre-filter">
         <select onChange={handleGenreChange} value={selectedGenre}>
-          {genres.map(genre => (
+          {genres.map((genre) => (
             <option key={genre.value} value={genre.value}>
               {genre.name}
             </option>
           ))}
         </select>
-      </header>
-      <nav className="nav-bar">
-        <button onClick={() => navigate('/anasayfa')}>Ana Sayfa</button>
-        <button onClick={() => navigate('/filmler')}>Filmler</button>
-        <button onClick={() => navigate('/kitaplar')}>Kitaplar</button>
-        <button onClick={() => navigate('/profil')}>Profil</button>
-        <button onClick={() => navigate('/giris')}>Çıkış Yap</button>
-      </nav>
-      <div className="search-bar">
-        <input type="text" placeholder="Bir kitap ara..." />
       </div>
-      <div className="book-grid">
-        {books.map(book => (
-          <div className="book-card" key={book.key}>
-            <img
-              src={`https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`}
-              alt={book.title}
-              className="book-cover"
-            />
-            <div className="book-info">
-              <h3>{book.title}</h3>
-              <p>Yazar: {book.authors.map(author => author.name).join(', ')}</p>
-              <p>Yayın Yılı: {book.first_publish_year || 'Bilinmiyor'}</p>
-              <button>Favorilere Ekle</button>
-            </div>
+      <div className="book-list">
+        {kitaplar.map((kitap) => (
+          <div key={kitap.id} className="book-card" onClick={() => navigate(`/kitap/${kitap.id}`)}>
+            {kitap.volumeInfo.imageLinks && (
+              <img
+                src={kitap.volumeInfo.imageLinks.thumbnail}
+                alt={kitap.volumeInfo.title}
+                className="book-poster"
+              />
+            )}
+            <h3>{kitap.volumeInfo.title}</h3>
+            <p>{kitap.volumeInfo.authors ? kitap.volumeInfo.authors.join(', ') : 'Bilinmiyor'}</p>
           </div>
         ))}
       </div>
-      <footer>
-        MOVIEBOOK © 2025
-      </footer>
     </div>
   );
-}
+};
 
 export default Kitaplar;
