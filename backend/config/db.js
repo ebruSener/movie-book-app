@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// MongoDB'ye bağlanmak için bir fonksiyon tanımlıyoruz
 const connectDB = async () => {
   try {
     // MongoDB bağlantı URL'si

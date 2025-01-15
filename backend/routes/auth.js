@@ -61,4 +61,37 @@ router.get('/info', async (req, res) => {
   }
 });
 
+// Kullanıcı kayıt işlemi
+router.post('/register', async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        // Kullanıcının zaten var olup olmadığını kontrol et
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).json({ msg: 'Kullanıcı zaten kayıtlı' });
+        }
+
+        // Yeni kullanıcı oluştur
+        user = new User({
+            name,
+            email,
+            password
+        });
+
+        // Şifreyi hash'le (bcrypt kullanarak)
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+
+        // Kullanıcıyı kaydet
+        await user.save();
+
+        // Kayıt başarılı mesajı döndür
+        res.status(201).json({ msg: 'Kayıt başarılı! Hoş geldiniz!' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Sunucu hatası');
+    }
+});
+
 module.exports = router;

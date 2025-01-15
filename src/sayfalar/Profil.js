@@ -4,34 +4,12 @@ import '../App.css';
 import { useNavigate } from 'react-router-dom';
 
 const Profil = () => {
-  const [userInfo, setUserInfo] = useState({});
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [hoveredItemId, setHoveredItemId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/users/me', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Kullanıcı bilgileri alınamadı');
-        }
-
-        const data = await response.json();
-        setUserInfo(data);
-      } catch (error) {
-        console.error('Kullanıcı bilgileri alınırken bir hata oluştu:', error);
-      }
-    };
-
-    fetchUserInfo();
-
     const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
     setFavorites(storedFavorites);
   }, []);
@@ -50,11 +28,6 @@ const Profil = () => {
     <div>
       <Header />
       <div className="profile-container">
-        <h1>Hesap Bilgileri</h1>
-        <div className="account-info">
-          <p><strong>Email:</strong> {userInfo.email}</p>
-          {/* Diğer hesap bilgilerini buraya ekleyebilirsiniz */}
-        </div>
         <button onClick={toggleFavorites} className="favorites-button">
           Favorilerim
         </button>
