@@ -1,9 +1,9 @@
-
 const express = require('express');
 const connectDB = require('./config/db'); // MongoDB bağlantı dosyası
 const authRoutes = require('./routes/auth'); // Authentication ile ilgili rotalar
 const favoriteRoutes = require('./routes/favorites'); // Favorilerle ilgili rotalar
 const cors = require('cors'); // CORS politikası için middleware
+
 
 const app = express();
 
@@ -17,6 +17,7 @@ connectDB(); // Bağlantı başlatılır
 // API Rotaları
 app.use('/api/auth', authRoutes); // Kimlik doğrulama rotası
 app.use('/api/favorites', favoriteRoutes); // Favoriler rotası
+
 
 // Sunucu Port Ayarı
 const PORT = process.env.PORT || 5000;

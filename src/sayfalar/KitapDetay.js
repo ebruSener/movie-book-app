@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../bilesenler/Header';
 import '../App.css';
@@ -8,7 +8,7 @@ const KitapDetay = () => {
   const [kitap, setKitap] = useState(null);
 
   useEffect(() => {
-    const fetchKitap = async () => {
+    const fetchKitapDetay = async () => {
       try {
         const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
         const data = await response.json();
@@ -18,49 +18,36 @@ const KitapDetay = () => {
       }
     };
 
-    fetchKitap();
+    fetchKitapDetay();
   }, [id]);
 
-  const handleAddToFavorites = async () => {
-    const userId = localStorage.getItem('userId'); // Kullanıcı ID'sini alın
-    if (!userId) {
-      alert('Lütfen giriş yapın.');
-      return;
-    }
+  const handleAddToFavorites = () => {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const isAlreadyFavorite = favorites.some(fav => fav.id === id);
 
-    try {
-      const response = await fetch('http://localhost:5000/api/favorites/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          type: 'book',
-          itemId: id,
-          title: kitap.title,
-        }),
+    if (isAlreadyFavorite) {
+      alert('Bu kitap zaten favorilerde');
+    } else {
+      favorites.push({
+        id,
+        title: kitap.title,
+        imageLinks: kitap.imageLinks,
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert('Favorilere eklendi!');
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error('Favorilere eklenirken bir hata oluştu:', error);
-      alert('Favorilere eklenirken bir hata oluştu.');
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      alert('Kitap favorilere eklendi');
     }
   };
 
-  if (!kitap) return <p>Yükleniyor...</p>;
+  if (!kitap) return <div>Yükleniyor...</div>;
 
   return (
     <div>
       <Header />
-      <div className="film-detay">
+      <div className="kitap-detay">
         <h1>{kitap.title}</h1>
-        {kitap.imageLinks && <img src={kitap.imageLinks.thumbnail} alt={kitap.title} />}
-        <p>Yazar: {kitap.authors ? kitap.authors.join(', ') : 'Bilinmiyor'}</p>
+        {kitap.imageLinks && (
+          <img src={kitap.imageLinks.thumbnail} alt={kitap.title} />
+        )}
         <p>{kitap.description}</p>
         <button onClick={handleAddToFavorites}>Favorilere Ekle</button>
       </div>

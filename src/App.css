@@ -273,55 +273,48 @@ button:hover {
 }
 
 .profile-container {
-  padding: 20px;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .profile-info {
   margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f5f5f5;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .favorites-button {
-  background-color: #d2b48c;
-  color: #ffffff;
-  border: none;
+  display: inline-block;
   padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  margin: 20px 0;
+  margin-bottom: 20px;
+  background-color: #8b4513;
+  color: white;
+  border: none;
   border-radius: 5px;
+  cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .favorites-button:hover {
-  background-color: #b8860b;
+  background-color: #5a2d0c;
 }
 
 .favorites-list {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f5f5f5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.favorite-card {
+  width: 150px;
+  text-align: center;
+}
+
+.favorite-poster {
+  width: 100%;
   border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.favorites-list ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.favorites-list li {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-.favorites-list li:last-child {
-  border-bottom: none;
 }
 
 .book-list {
@@ -386,4 +379,82 @@ button:hover {
   width: 100%;
   border-radius: 10px;
   margin-bottom: 10px;
+}
+
+.kitap-detay {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.kitap-detay h1 {
+  font-size: 32px;
+  color: #8b4513;
+  margin-bottom: 20px;
+}
+
+.kitap-detay img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.kitap-detay p {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.kitap-detay button {
+  background-color: #8b4513;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.kitap-detay button:hover {
+  background-color: #5a2d0c;
+}
+
+.remove-favorite-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.remove-favorite-button:hover {
+  background-color: darkred;
+}
+
+.account-info {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.account-info p {
+  font-size: 16px;
+  color: #333;
+  margin: 10px 0;
+}
+
+.account-info strong {
+  color: #8b4513;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../bilesenler/Header';
 import '../App.css';
@@ -8,7 +8,7 @@ const FilmDetay = () => {
   const [film, setFilm] = useState(null);
 
   useEffect(() => {
-    const fetchFilm = async () => {
+    const fetchFilmDetay = async () => {
       try {
         const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=6dd2d2c38d904ab0a956859a545e8db2&language=en-US`);
         const data = await response.json();
@@ -18,41 +18,27 @@ const FilmDetay = () => {
       }
     };
 
-    fetchFilm();
+    fetchFilmDetay();
   }, [id]);
 
-  const handleAddToFavorites = async () => {
-    const userId = localStorage.getItem('userId'); // Kullanıcı ID'sini alın
-    if (!userId) {
-      alert('Lütfen giriş yapın.');
-      return;
-    }
+  const handleAddToFavorites = () => {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const isAlreadyFavorite = favorites.some(fav => fav.id === film.id);
 
-    try {
-      const response = await fetch('http://localhost:5000/api/favorites/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          type: 'movie',
-          itemId: film.id,
-          title: film.title,
-        }),
+    if (isAlreadyFavorite) {
+      alert('Bu film zaten favorilerde');
+    } else {
+      favorites.push({
+        id: film.id,
+        title: film.title,
+        poster_path: film.poster_path,
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert('Favorilere eklendi!');
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error('Favorilere eklenirken bir hata oluştu:', error);
-      alert('Favorilere eklenirken bir hata oluştu.');
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      alert('Film favorilere eklendi');
     }
   };
 
-  if (!film) return <p>Yükleniyor...</p>;
+  if (!film) return <div>Yükleniyor...</div>;
 
   return (
     <div>
