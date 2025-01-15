@@ -22,8 +22,8 @@ const Giris = () => {
       const data = await response.json();
       if (response.ok) {
         alert(data.message);
-        login(data.token);
-        navigate('/');
+        login(data.token); // Kullanıcıyı oturum açmış olarak işaretle
+        navigate('/anasayfa'); // Ana sayfaya yönlendir
       } else {
         alert(data.error);
       }
@@ -69,4 +69,4 @@ const Giris = () => {
   );
 };
 
-export default Giris;  
+export default Giris;

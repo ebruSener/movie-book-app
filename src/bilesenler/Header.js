@@ -15,7 +15,7 @@ const Header = () => {
       <h1>MOVIEBOOK</h1>
       <img src="/web_logo.svg" alt="Site Logosu" />
       <nav className="nav-bar">
-        <button onClick={() => navigate('/')}>Ana Sayfa</button>
+        <button onClick={() => navigate('/anasayfa')}>Ana Sayfa</button>
         <button onClick={() => navigate('/filmler')}>Filmler</button>
         <button onClick={() => navigate('/kitaplar')}>Kitaplar</button>
         <button onClick={() => navigate('/profil')}>Profil</button>

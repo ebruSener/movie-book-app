@@ -2,13 +2,13 @@ import React, { useState, createContext, useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Giris from "./sayfalar/Giris";
 import Kayit from "./sayfalar/Kayit";
-import AnaSayfa from "./sayfalar/AnaSayfa";
 import FavoritesPage from "./sayfalar/FavoritesPage";
 import Filmler from "./sayfalar/Filmler";
 import Kitaplar from "./sayfalar/Kitaplar";
 import FilmDetay from './sayfalar/FilmDetay';
 import KitapDetay from './sayfalar/KitapDetay';
 import Profil from './sayfalar/Profil';
+import AnaSayfa from "./sayfalar/AnaSayfa";
 import "./App.css";
 
 // Auth Context oluştur
@@ -43,8 +43,12 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<ProtectedRoute><AnaSayfa /></ProtectedRoute>} />
+          <Route
+            path="/"
+            element={<Navigate to="/giris" replace />} // Varsayılan rota giriş sayfası
+          />
           <Route path="/giris" element={<Giris />} />
+          <Route path="/anasayfa" element={<ProtectedRoute><AnaSayfa /></ProtectedRoute>} />
           <Route path="/filmler" element={<ProtectedRoute><Filmler /></ProtectedRoute>} />
           <Route path="/kitaplar" element={<ProtectedRoute><Kitaplar /></ProtectedRoute>} />
           <Route path="/kayit" element={<Kayit />} />
@@ -71,7 +75,6 @@ const ProtectedRoute = ({ children }) => {
   const location = useLocation();
 
   if (!isLoggedIn) {
-    // Giriş yapılmamışsa /giris sayfasına yönlendir
     return <Navigate to="/giris" state={{ from: location }} />;
   }
 
